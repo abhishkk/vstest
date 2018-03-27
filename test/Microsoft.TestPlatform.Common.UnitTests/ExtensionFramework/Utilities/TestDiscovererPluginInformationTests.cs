@@ -52,6 +52,8 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework.Utilities
             CollectionAssert.AreEqual(new List<string> {"csv", "docx"}, this.testPluginInformation.FileExtensions);
         }
 
+        // TODO: Unit tests for assembly type as well.
+
         [TestMethod]
         public void DefaultExecutorUriShouldReturnEmptyListIfADiscovererDoesNotHaveOne()
         {

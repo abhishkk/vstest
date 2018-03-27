@@ -96,6 +96,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework.Utilities
             Assert.AreEqual(typeof(DummyDiscovererCapability), metadata.GetType());
             CollectionAssert.AreEqual(new List<string> { "csv" }, (metadata as ITestDiscovererCapabilities).FileExtension.ToArray());
             Assert.AreEqual("executor://unittestexecutor/", (metadata as ITestDiscovererCapabilities).DefaultExecutorUri.AbsoluteUri);
+            Assert.AreEqual("native", (metadata as ITestDiscovererCapabilities).AssemblyType);
         }
 
         #endregion
@@ -116,16 +117,25 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework.Utilities
                 private set;
             }
 
-            public DummyDiscovererCapability(List<string> fileExtensions, string executorURI)
+            public string AssemblyType
+            {
+                get;
+                private set;
+            }
+
+            public DummyDiscovererCapability(List<string> fileExtensions, string executorURI, string assemblyType)
             {
                 this.FileExtension = fileExtensions;
                 this.DefaultExecutorUri = new Uri(executorURI);
+                this.AssemblyType = assemblyType;
             }
         }
 
+        // TODO: assembly type in discoverer.
 
         [FileExtension("csv")]
         [DefaultExecutorUri("executor://unittestexecutor")]
+        [AssemblyType("native")]
         private class DummyExtension : ITestDiscoverer
         {
             public void DiscoverTests(IEnumerable<string> sources, IDiscoveryContext discoveryContext, IMessageLogger logger, ITestCaseDiscoverySink discoverySink)

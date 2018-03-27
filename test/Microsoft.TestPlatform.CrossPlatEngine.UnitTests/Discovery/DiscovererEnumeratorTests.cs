@@ -507,6 +507,8 @@ namespace TestPlatform.CrossPlatEngine.UnitTests.Discovery
             }
         }
 
+        // TODO: discoverer for native and managed assembly type as well.
+
         [FileExtension(".dll")]
         [DefaultExecutorUri("discoverer://dlldiscoverer")]
         private class DllTestDiscoverer : ITestDiscoverer

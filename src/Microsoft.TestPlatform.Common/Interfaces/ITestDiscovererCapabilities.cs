@@ -20,5 +20,12 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.Interfaces
         /// Default executor Uri for this discoverer
         /// </summary>
         Uri DefaultExecutorUri { get; }
+
+        // TODO: Even though we let user pass string in AssemblyTypeAttribute, here we should store enum as the value should be stored here after validation.
+
+        /// <summary>
+        /// Assembly type supported by this discoverer.
+        /// </summary>
+        string AssemblyType { get; }
     }
 }

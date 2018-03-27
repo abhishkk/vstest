@@ -137,6 +137,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Execution
 
                 foreach (var discoverer in discovererToSourcesMap.Keys)
                 {
+                    // TODO: May be main implementation will come here.
                     var executorUri = discoverer.Metadata.DefaultExecutorUri;
                     if (executorUri == null)
                     {

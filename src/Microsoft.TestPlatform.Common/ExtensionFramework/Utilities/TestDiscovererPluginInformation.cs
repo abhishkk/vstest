@@ -26,6 +26,8 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
             {
                 this.FileExtensions = GetFileExtensions(testDiscovererType);
                 this.DefaultExecutorUri = GetDefaultExecutorUri(testDiscovererType);
+                // TODO: Ideally we should take this param along with FileExtensions as second param of the constructor.
+                this.AssemblyType = GetAssemblyType(testDiscovererType);
             }
         }
 
@@ -53,6 +55,13 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
         /// Gets the Uri identifying the executor
         /// </summary>
         public string DefaultExecutorUri
+        {
+            get;
+            private set;
+        }
+
+        // TODO: AssemblyType should come from some enum which has only two values, native and managed.
+        public string AssemblyType
         {
             get;
             private set;
@@ -100,6 +109,24 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
                 if (!string.IsNullOrEmpty(executorUriAttribute.ExecutorUri))
                 {
                     result = executorUriAttribute.ExecutorUri;
+                }
+            }
+
+            return result;
+        }
+
+        private static string GetAssemblyType(Type testDiscovererType)
+        {
+            string result = string.Empty;
+
+            object[] attributes = testDiscovererType.GetTypeInfo().GetCustomAttributes(typeof(AssemblyTypeAttribute), false).ToArray();
+            if (attributes != null && attributes.Length > 0)
+            {
+                AssemblyTypeAttribute assemblyTypeAttribute = (AssemblyTypeAttribute)attributes[0];
+
+                if (!string.IsNullOrEmpty(assemblyTypeAttribute.AssemblyType))
+                {
+                    result = assemblyTypeAttribute.AssemblyType;
                 }
             }
 

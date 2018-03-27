@@ -86,6 +86,11 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.Processors.Utilities
             return archType;
         }
 
+        /// <inheritdoc />
+        public AssemblyType GetAssemblyType(string filePath)
+        {
+            throw new NotImplementedException();
+        }
         private static FrameworkName GetFrameworkNameFromAssemblyMetadata(FileStream assemblyStream)
         {
             FrameworkName frameworkName = new FrameworkName(Framework.DefaultFramework.Name);
@@ -143,7 +148,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.Processors.Utilities
             return arch;
         }
 
-        public Architecture GetArchitectureForSource(string imagePath)
+        private Architecture GetArchitectureForSource(string imagePath)
         {
             // For details refer to below code available on MSDN.
             //https://code.msdn.microsoft.com/windowsapps/CSCheckExeType-aab06100#content

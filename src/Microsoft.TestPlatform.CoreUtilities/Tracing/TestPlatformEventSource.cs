@@ -123,9 +123,9 @@ namespace Microsoft.VisualStudio.TestPlatform.CoreUtilities.Tracing
 
         /// <inheritdoc/>
         [Event(TestPlatformInstrumentationEvents.AdapterDiscoveryStartEventId)]
-        public void AdapterDiscoveryStart(string executorUri)
+        public void AdapterDiscoveryStart(string adapterInfo)
         {
-            this.WriteEvent(TestPlatformInstrumentationEvents.AdapterDiscoveryStartEventId, executorUri);
+            this.WriteEvent(TestPlatformInstrumentationEvents.AdapterDiscoveryStartEventId, adapterInfo);
         }
 
         /// <inheritdoc/>

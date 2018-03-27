@@ -147,7 +147,11 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
                     var currentTotalTests = this.discoveryResultCache.TotalDiscoveredTests;
                     var newTimeStart = DateTime.UtcNow;
 
-                    this.testPlatformEventSource.AdapterDiscoveryStart(discoverer.Metadata.DefaultExecutorUri.AbsoluteUri);
+                    var adapterInfo = string.IsNullOrWhiteSpace(discoverer.Metadata.AssemblyType) ?
+                            discoverer.Metadata.DefaultExecutorUri.AbsoluteUri :
+                            $"Uri: {discoverer.Metadata.DefaultExecutorUri.AbsoluteUri}, AssemblyType: {discoverer.Metadata.AssemblyType}";
+
+                    this.testPlatformEventSource.AdapterDiscoveryStart(adapterInfo);
                     discoverer.Value.DiscoverTests(discovererToSourcesMap[discoverer], context, logger, discoverySink);
 
                     var totalAdapterRunTime = DateTime.UtcNow - newTimeStart;
@@ -158,7 +162,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
                     if (this.discoveryResultCache.TotalDiscoveredTests > currentTotalTests)
                     {
                         var totalDiscoveredTests = this.discoveryResultCache.TotalDiscoveredTests - currentTotalTests;
-                        this.requestData.MetricsCollection.Add(string.Format("{0}.{1}", TelemetryDataConstants.TotalTestsByAdapter, discoverer.Metadata.DefaultExecutorUri), totalDiscoveredTests);
+                        this.requestData.MetricsCollection.Add(string.Format("{0}.{1}", TelemetryDataConstants.TotalTestsByAdapter, adapterInfo), totalDiscoveredTests);
                         totalAdaptersUsed++;
                     }
 
@@ -170,7 +174,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
                     }
 
                     // Collecting Data Point for Time Taken to Discover Tests by each Adapter
-                    this.requestData.MetricsCollection.Add(string.Format("{0}.{1}", TelemetryDataConstants.TimeTakenToDiscoverTestsByAnAdapter, discoverer.Metadata.DefaultExecutorUri), totalAdapterRunTime.TotalSeconds);
+                    this.requestData.MetricsCollection.Add(string.Format("{0}.{1}", TelemetryDataConstants.TimeTakenToDiscoverTestsByAnAdapter, adapterInfo), totalAdapterRunTime.TotalSeconds);
                     totalTimeTakenByAdapters += totalAdapterRunTime.TotalSeconds;
                 }
                 catch (Exception e)

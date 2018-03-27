@@ -20,5 +20,11 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.Processors
         /// Determines Architecture from filePath.
         /// </summary>
         Architecture GetArchitecture(string filePath);
+
+        /// <summary>
+        /// Determines AssemblyType from filePath.
+        /// </summary>
+        /// <param name="filePath"></param>
+        AssemblyType GetAssemblyType(string filePath);
     }
 }

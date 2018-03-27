@@ -81,6 +81,7 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
             // C++ UWP adapters do not follow TestAdapater naming convention, so making this exception
             if (!extensionPaths.Any())
             {
+                // TODO: Think of this while doing native managed work.
                 this.AddKnownExtensions(ref extensionPaths);
             }
 

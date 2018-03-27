@@ -164,12 +164,15 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
     /// </summary>
     internal class TestDiscovererMetadata : ITestDiscovererCapabilities
     {
+        // TODO: Understand use of this class properly. From current understanding, TestDiscoveryExtensionsManager picks discovery metadata from TestDiscovererPLuginInformation and stores it in TestDiscovererMetaData. But check it once while debugging is this happening or not. Also check if this file is used for caching.
+
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="fileExtensions"> The file Extensions. </param>
         /// <param name="defaultExecutorUri"> The default Executor Uri. </param>
-        public TestDiscovererMetadata(IReadOnlyCollection<string> fileExtensions, string defaultExecutorUri)
+        /// <param name="assemblyType"> The assembly type. </param>
+        public TestDiscovererMetadata(IReadOnlyCollection<string> fileExtensions, string defaultExecutorUri, string assemblyType)
         {
             if (fileExtensions != null && fileExtensions.Count > 0)
             {
@@ -179,6 +182,13 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
             if (!string.IsNullOrWhiteSpace(defaultExecutorUri))
             {
                 this.DefaultExecutorUri = new Uri(defaultExecutorUri);
+            }
+
+            if (!string.IsNullOrWhiteSpace(assemblyType))
+            {
+                // TODO: If we are letting user pass assembly type in string format instead of enum. Then is this the right place for validation of the value?
+                // TODO: I think we should do the validation here only and convert string to enum. Because string to uri conversion for DefaultExecutorUri is also happening here only.
+                this.AssemblyType = assemblyType;
             }
         }
 
@@ -192,9 +202,18 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
         }
 
         /// <summary>
-        /// Gets the default executor Uri for this discoverer
+        /// Gets the default executor Uri for this discoverer.
         /// </summary>
         public Uri DefaultExecutorUri
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the assembly type supported by the discoverer.
+        /// </summary>
+        public string AssemblyType
         {
             get;
             private set;

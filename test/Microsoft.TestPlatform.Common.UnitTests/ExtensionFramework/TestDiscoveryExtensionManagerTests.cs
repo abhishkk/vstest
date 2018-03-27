@@ -79,7 +79,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenFileExtensionsIsNull()
         {
-            var metadata = new TestDiscovererMetadata(null, null);
+            var metadata = new TestDiscovererMetadata(null, null, null);
 
             Assert.IsNull(metadata.FileExtension);
         }
@@ -87,7 +87,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenFileExtensionsIsEmpty()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> {}, null);
+            var metadata = new TestDiscovererMetadata(new List<string> {}, null, null);
 
             Assert.IsNull(metadata.FileExtension);
         }
@@ -95,24 +95,40 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenDefaultUriIsNull()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> { }, null);
+            var metadata = new TestDiscovererMetadata(new List<string> { }, null, null);
 
             Assert.IsNull(metadata.DefaultExecutorUri);
         }
 
         [TestMethod]
+        public void TestDiscovererMetadataCtorDoesNotThrowWhenAssemblyTypeIsNull()
+        {
+            var metadata = new TestDiscovererMetadata(new List<string> { }, null, null);
+
+            Assert.IsNull(metadata.AssemblyType);
+        }
+
+        [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenDefaultUriIsEmpty()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> { }, " ");
+            var metadata = new TestDiscovererMetadata(new List<string> { }, " ", null);
 
             Assert.IsNull(metadata.DefaultExecutorUri);
+        }
+
+        [TestMethod]
+        public void TestDiscovererMetadataCtorDoesNotThrowWhenAssemblyTypeIsEmpty()
+        {
+            var metadata = new TestDiscovererMetadata(new List<string> { }, " ", " ");
+
+            Assert.IsNull(metadata.AssemblyType);
         }
 
         [TestMethod]
         public void TestDiscovererMetadataCtorSetsFileExtensions()
         {
             var extensions = new List<string> { "csv", "dll" };
-            var metadata = new TestDiscovererMetadata(extensions, null);
+            var metadata = new TestDiscovererMetadata(extensions, null, null);
 
             CollectionAssert.AreEqual(extensions, metadata.FileExtension.ToList());
         }
@@ -120,9 +136,17 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorSetsDefaultUri()
         {
-            var metadata = new TestDiscovererMetadata(null, "executor://helloworld");
+            var metadata = new TestDiscovererMetadata(null, "executor://helloworld", null);
 
             Assert.AreEqual("executor://helloworld/", metadata.DefaultExecutorUri.AbsoluteUri);
+        }
+
+        [TestMethod]
+        public void TestDiscovererMetadataCtorSetsAssemblyType()
+        {
+            var metadata = new TestDiscovererMetadata(null, "executor://helloworld", "managed");
+
+            Assert.AreEqual("managed", metadata.AssemblyType);
         }
     }
 }

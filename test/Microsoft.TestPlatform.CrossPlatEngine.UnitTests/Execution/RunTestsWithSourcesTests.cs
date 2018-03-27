@@ -244,6 +244,7 @@ namespace TestPlatform.CrossPlatEngine.UnitTests.Execution
             }
         }
 
+        // TODO: write a discoverer with assembly type native and managed.
         [FileExtension(".dll")]
         [DefaultExecutorUri(RunTestsWithSourcesTestsExecutorUri)]
         private class RunTestWithSourcesDiscoverer : ITestDiscoverer
