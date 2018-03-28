@@ -88,6 +88,21 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLineUtilities
             return architecture;
         }
 
+        public void AutoDetectAssemblyType(List<string> sources, IDictionary<string, AssemblyType> sourceAssemblyTypes)
+        {
+            try
+            {
+                if (sources != null && sources.Count > 0)
+                {
+                    DetermineAssemblyTypes(sources, sourceAssemblyTypes);
+                }
+            }
+            catch (Exception ex)
+            {
+                EqtTrace.Error("Failed to determine assemblyTypes:{0}", ex);
+            }
+        }
+
         /// <summary>
         /// Determines Framework from sources.
         /// </summary>
@@ -183,6 +198,16 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLineUtilities
             var extType = Path.GetExtension(filePath);
             return extType != null && (extType.Equals(".dll", StringComparison.OrdinalIgnoreCase) ||
                                        extType.Equals(".exe", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void DetermineAssemblyTypes(List<string> sources, IDictionary<string, AssemblyType> sourceAssemblyTypes)
+        {
+            foreach (string source in sources)
+            {
+                sourceAssemblyTypes[source] = IsDotNETAssembly(source) ?
+                    assemblyMetadataProvider.GetAssemblyType(source) :
+                    AssemblyType.NotADotNetAssembly;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Microsoft.VisualStudio.TestPlatform.ObjectModel
     public enum AssemblyType
     {
         Native,
-        Managed
+        Managed,
+        NotADotNetAssembly
     }
 }

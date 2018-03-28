@@ -89,8 +89,50 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.Processors.Utilities
         /// <inheritdoc />
         public AssemblyType GetAssemblyType(string filePath)
         {
-            throw new NotImplementedException();
+            var assemblyType = AssemblyType.Managed;
+
+            try
+            {
+                using (var assemblyStream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    assemblyType = GetAssemblyTypeFromAssemblyMetadata(assemblyStream);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: In case of error, we should either error out OR we should set assembly type to UnKnown. But never let it be managed.
+                EqtTrace.Warning("GetAssemblyTypeFromAssemblyMetadata: failed to determine assembly type: {0} for assembly: {1}", ex, filePath);
+            }
+
+            if (EqtTrace.IsInfoEnabled)
+            {
+                EqtTrace.Info("AssemblyMetadataProvider.GetAssemblyType: Determined assemblyType:'{0}' for source: '{1}'", assemblyType, filePath);
+            }
+
+            return assemblyType;
         }
+
+        private AssemblyType GetAssemblyTypeFromAssemblyMetadata(FileStream assemblyStream)
+        {
+            // TODO: why we are opening and reading the dll again and again. We should read the dll in one go in contructor. After calling all methods destroy this object.
+
+            var assemblyType = AssemblyType.Managed;
+
+            using (var peReader = new PEReader(assemblyStream))
+            {
+                var peHeaders = peReader.PEHeaders;
+                var corHeader = peHeaders.CorHeader;
+                var corHeaderStartOffset = peHeaders.CorHeaderStartOffset;
+                
+                if (corHeader == null && corHeaderStartOffset < 0)
+                {
+                    assemblyType = AssemblyType.Native;
+                }
+            }
+
+            return assemblyType;
+        }
+
         private static FrameworkName GetFrameworkNameFromAssemblyMetadata(FileStream assemblyStream)
         {
             FrameworkName frameworkName = new FrameworkName(Framework.DefaultFramework.Name);

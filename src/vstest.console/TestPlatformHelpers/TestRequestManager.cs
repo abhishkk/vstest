@@ -341,6 +341,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.TestPlatformHelpers
             updatedRunSettingsXml = runsettingsXml;
             IDictionary<string, Architecture> sourcePlatforms = new Dictionary<string, Architecture>();
             IDictionary<string, Framework> sourceFrameworks = new Dictionary<string, Framework>();
+            IDictionary<string, AssemblyType> sourceAssemblyTypes = new Dictionary<string, AssemblyType>();
 
             if (!string.IsNullOrEmpty(runsettingsXml))
             {
@@ -353,10 +354,12 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.TestPlatformHelpers
 
                     var navigator = document.CreateNavigator();
 
+                    // TODO: Get inferedFramework only if updateFramework is required as it is used in that code only. DO the same for infered platform.
                     var inferedFramework = inferHelper.AutoDetectFramework(sources, sourceFrameworks);
                     Framework chosenFramework;
                     var inferedPlatform = inferHelper.AutoDetectArchitecture(sources, sourcePlatforms);
                     Architecture chosenPlatform;
+                    inferHelper.AutoDetectAssemblyType(sources, sourceAssemblyTypes);
 
                     // Update frmaework and platform if required. For commandline scenario update happens in ArgumentProcessor.
                     bool updateFramework = IsAutoFrameworkDetectRequired(navigator, out chosenFramework);
