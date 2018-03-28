@@ -95,6 +95,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.Processors.Utilities
             {
                 using (var assemblyStream = File.Open(filePath, FileMode.Open, FileAccess.Read))
                 {
+                    // TODO: For exe also verify if its working or not. For dll its verified.
                     assemblyType = GetAssemblyTypeFromAssemblyMetadata(assemblyStream);
                 }
             }

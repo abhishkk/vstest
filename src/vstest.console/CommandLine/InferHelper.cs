@@ -204,9 +204,10 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLineUtilities
         {
             foreach (string source in sources)
             {
-                sourceAssemblyTypes[source] = IsDotNETAssembly(source) ?
-                    assemblyMetadataProvider.GetAssemblyType(source) :
-                    AssemblyType.NotADotNetAssembly;
+                if (IsDotNETAssembly(source))
+                {
+                    sourceAssemblyTypes[source] = assemblyMetadataProvider.GetAssemblyType(source);
+                }
             }
         }
     }

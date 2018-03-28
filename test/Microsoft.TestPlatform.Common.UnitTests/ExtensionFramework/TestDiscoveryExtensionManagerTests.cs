@@ -8,6 +8,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
     using System.Reflection;
 
     using Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework;
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -79,7 +80,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenFileExtensionsIsNull()
         {
-            var metadata = new TestDiscovererMetadata(null, null, null);
+            var metadata = new TestDiscovererMetadata(null, null);
 
             Assert.IsNull(metadata.FileExtension);
         }
@@ -87,7 +88,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenFileExtensionsIsEmpty()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> {}, null, null);
+            var metadata = new TestDiscovererMetadata(new List<string> {}, null);
 
             Assert.IsNull(metadata.FileExtension);
         }
@@ -95,7 +96,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenDefaultUriIsNull()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> { }, null, null);
+            var metadata = new TestDiscovererMetadata(new List<string> { }, null, default(AssemblyType));
 
             Assert.IsNull(metadata.DefaultExecutorUri);
         }
@@ -103,7 +104,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenAssemblyTypeIsNull()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> { }, null, null);
+            var metadata = new TestDiscovererMetadata(new List<string> { }, null, default(AssemblyType));
 
             Assert.IsNull(metadata.AssemblyType);
         }
@@ -111,24 +112,16 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorDoesNotThrowWhenDefaultUriIsEmpty()
         {
-            var metadata = new TestDiscovererMetadata(new List<string> { }, " ", null);
+            var metadata = new TestDiscovererMetadata(new List<string> { }, " ", default(AssemblyType));
 
             Assert.IsNull(metadata.DefaultExecutorUri);
-        }
-
-        [TestMethod]
-        public void TestDiscovererMetadataCtorDoesNotThrowWhenAssemblyTypeIsEmpty()
-        {
-            var metadata = new TestDiscovererMetadata(new List<string> { }, " ", " ");
-
-            Assert.IsNull(metadata.AssemblyType);
         }
 
         [TestMethod]
         public void TestDiscovererMetadataCtorSetsFileExtensions()
         {
             var extensions = new List<string> { "csv", "dll" };
-            var metadata = new TestDiscovererMetadata(extensions, null, null);
+            var metadata = new TestDiscovererMetadata(extensions, null);
 
             CollectionAssert.AreEqual(extensions, metadata.FileExtension.ToList());
         }
@@ -136,7 +129,7 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorSetsDefaultUri()
         {
-            var metadata = new TestDiscovererMetadata(null, "executor://helloworld", null);
+            var metadata = new TestDiscovererMetadata(null, "executor://helloworld");
 
             Assert.AreEqual("executor://helloworld/", metadata.DefaultExecutorUri.AbsoluteUri);
         }
@@ -144,9 +137,9 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework
         [TestMethod]
         public void TestDiscovererMetadataCtorSetsAssemblyType()
         {
-            var metadata = new TestDiscovererMetadata(null, "executor://helloworld", "managed");
+            var metadata = new TestDiscovererMetadata(null, "executor://helloworld", AssemblyType.Managed);
 
-            Assert.AreEqual("managed", metadata.AssemblyType);
+            Assert.AreEqual(AssemblyType.Managed, metadata.AssemblyType);
         }
     }
 }

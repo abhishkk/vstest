@@ -27,7 +27,11 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
                 this.FileExtensions = GetFileExtensions(testDiscovererType);
                 this.DefaultExecutorUri = GetDefaultExecutorUri(testDiscovererType);
                 // TODO: Ideally we should take this param along with FileExtensions as second param of the constructor.
-                this.AssemblyType = GetAssemblyType(testDiscovererType);
+
+                if (this.AssemblyType == AssemblyType.Unknown)
+                {
+                    this.AssemblyType = GetAssemblyType(testDiscovererType); // TODO: remove this if we are not supporting this.
+                }
             }
         }
 
@@ -61,7 +65,7 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
         }
 
         // TODO: AssemblyType should come from some enum which has only two values, native and managed.
-        public string AssemblyType
+        public AssemblyType AssemblyType
         {
             get;
             private set;
@@ -72,8 +76,9 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
         /// </summary>
         /// <param name="testDicovererType">Data type of the test discoverer</param>
         /// <returns>List of file extensions</returns>
-        private static List<string> GetFileExtensions(Type testDicovererType)
+        private List<string> GetFileExtensions(Type testDicovererType)
         {
+            // ***TODO***: IMPORTANT: In run tests directly, discovery happens but code is not coming here. Check where is the code going.
             var fileExtensions = new List<string>();
             
             var attributes = testDicovererType.GetTypeInfo().GetCustomAttributes(typeof(FileExtensionAttribute), false).ToArray();
@@ -84,7 +89,10 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
                     var fileExtAttribute = (FileExtensionAttribute)attribute;
                     if (!string.IsNullOrEmpty(fileExtAttribute.FileExtension))
                     {
-                        fileExtensions.Add(fileExtAttribute.FileExtension);
+                        if (!SetAssemblyTypeIfExtensionMatches(fileExtAttribute.FileExtension))
+                        {
+                            fileExtensions.Add(fileExtAttribute.FileExtension);
+                        }
                     }
                 }
             }
@@ -92,12 +100,35 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
             return fileExtensions;
         }
 
+        // TODO: As we are doing hack here. Write comment properly.
+        private bool SetAssemblyTypeIfExtensionMatches(string fileExtension)
+        {
+            // TODO: write this section properly and move string to const.
+            if ("_native_".Equals(fileExtension))
+            {
+                if (this.AssemblyType == AssemblyType.Unknown)
+                {
+                    this.AssemblyType = AssemblyType.Native;
+                }
+                return true;
+            }
+            else if ("_managed_".Equals(fileExtension))
+            {
+                if (this.AssemblyType == AssemblyType.Unknown)
+                {
+                    this.AssemblyType = AssemblyType.Managed;
+                }
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Returns the value of default executor Uri on this type. 'Null' if not present.
         /// </summary>
         /// <param name="testDiscovererType"> The test discoverer Type. </param>
         /// <returns> The default executor URI. </returns>
-        private static string GetDefaultExecutorUri(Type testDiscovererType)
+        private string GetDefaultExecutorUri(Type testDiscovererType)
         {
             string result = string.Empty;
             
@@ -115,8 +146,11 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
             return result;
         }
 
-        private static string GetAssemblyType(Type testDiscovererType)
+        private AssemblyType GetAssemblyType(Type testDiscovererType)
         {
+            var assemblyType = default(AssemblyType);
+
+            // TODO: Instead of string, if we can take enum as attribute, prefer that.
             string result = string.Empty;
 
             object[] attributes = testDiscovererType.GetTypeInfo().GetCustomAttributes(typeof(AssemblyTypeAttribute), false).ToArray();
@@ -130,7 +164,16 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
                 }
             }
 
-            return result;
+            if ("native".Equals(result))
+            {
+                assemblyType = AssemblyType.Native;
+            }
+            else if ("managed".Equals(result))
+            {
+                assemblyType = AssemblyType.Managed;
+            }
+
+            return assemblyType;
         }
     }
 }

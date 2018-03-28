@@ -5,8 +5,8 @@ namespace Microsoft.VisualStudio.TestPlatform.ObjectModel
 {
     public enum AssemblyType
     {
+        Unknown,
         Native,
         Managed,
-        NotADotNetAssembly
     }
 }

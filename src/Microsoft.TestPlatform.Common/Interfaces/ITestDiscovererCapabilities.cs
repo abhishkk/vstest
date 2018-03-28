@@ -3,6 +3,7 @@
 
 namespace Microsoft.VisualStudio.TestPlatform.Common.Interfaces
 {
+    using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using System;
     using System.Collections.Generic;
 
@@ -23,9 +24,11 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.Interfaces
 
         // TODO: Even though we let user pass string in AssemblyTypeAttribute, here we should store enum as the value should be stored here after validation.
 
+        // TODO: AssemblyType is currently present in objectModel. SHould it? as it is taking extra dependancy of OM.
+
         /// <summary>
         /// Assembly type supported by this discoverer.
         /// </summary>
-        string AssemblyType { get; }
+        AssemblyType AssemblyType { get; }
     }
 }

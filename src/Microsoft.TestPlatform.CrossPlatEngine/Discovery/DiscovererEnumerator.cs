@@ -147,7 +147,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
                     var currentTotalTests = this.discoveryResultCache.TotalDiscoveredTests;
                     var newTimeStart = DateTime.UtcNow;
 
-                    var adapterInfo = string.IsNullOrWhiteSpace(discoverer.Metadata.AssemblyType) ?
+                    var adapterInfo = discoverer.Metadata.AssemblyType == AssemblyType.Unknown ?
                             discoverer.Metadata.DefaultExecutorUri.AbsoluteUri :
                             $"Uri: {discoverer.Metadata.DefaultExecutorUri.AbsoluteUri}, AssemblyType: {discoverer.Metadata.AssemblyType}";
 
@@ -228,6 +228,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
             IEnumerable<string> sources,
             IMessageLogger logger)
         {
+
             var allDiscoverers = GetDiscoverers(extensionAssembly, throwOnError: true);
 
             if (allDiscoverers == null || !allDiscoverers.Any())
@@ -241,14 +242,30 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
                 return null;
             }
 
+            // TODO: assuming here that native and assembly will cover all assemblies. In case of error while reading PEHeader, if there was error then we might get additional.
+            var sourceToAssemblyTypeMap = GetSourceToAssemblyTypeMap(sources);
+
+            var nativeAssemblySources = sourceToAssemblyTypeMap.Where(pair => pair.Value == AssemblyType.Native).Select(pair => pair.Key);
+            var managedAssemblySources = sourceToAssemblyTypeMap.Where(pair => pair.Value == AssemblyType.Managed).Select(pair => pair.Key);
+
             var result = new Dictionary<LazyExtension<ITestDiscoverer, ITestDiscovererCapabilities>, IEnumerable<string>>();
             var sourcesForWhichNoDiscovererIsAvailable = new List<string>(sources);
 
             foreach (var discoverer in allDiscoverers)
             {
+                var sourcesToCheck = sources;
+                if (discoverer.Metadata.AssemblyType == AssemblyType.Native)
+                {
+                    sourcesToCheck = sources.Except(managedAssemblySources, StringComparer.OrdinalIgnoreCase);
+                }
+                else if (discoverer.Metadata.AssemblyType == AssemblyType.Managed)
+                {
+                    sourcesToCheck = sources.Except(nativeAssemblySources, StringComparer.OrdinalIgnoreCase);
+                }
+
                 // Find the sources which this discoverer can look at. 
                 // Based on whether it is registered for a matching file extension or no file extensions at all.
-                var matchingSources = (from source in sources
+                var matchingSources = (from source in sourcesToCheck
                                        where
                                            (discoverer.Metadata.FileExtension == null
                                             || discoverer.Metadata.FileExtension.Contains(
@@ -279,6 +296,15 @@ namespace Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery
             }
 
             return result;
+        }
+
+        private static IDictionary<string, AssemblyType> GetSourceToAssemblyTypeMap(IEnumerable<string> sources)
+        {
+            // TODO: change name of emthods AutoDetectAssemblyType.
+            var inferHelper = new InferHelper(AssemblyMetadataProvider.Instance);
+            var sourceToAssemblyType = new Dictionary<string, AssemblyType>();
+            inferHelper.AutoDetectAssemblyType(sources, sourceToAssemblyType);
+            return sourceToAssemblyType;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]

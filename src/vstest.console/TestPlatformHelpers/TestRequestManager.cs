@@ -359,6 +359,7 @@ namespace Microsoft.VisualStudio.TestPlatform.CommandLine.TestPlatformHelpers
                     Framework chosenFramework;
                     var inferedPlatform = inferHelper.AutoDetectArchitecture(sources, sourcePlatforms);
                     Architecture chosenPlatform;
+                    // TODO: check what happens when we pass same source twice, are we making it distinct before these line of code. If not, check AutoDetectAssemblyType code properly.
                     inferHelper.AutoDetectAssemblyType(sources, sourceAssemblyTypes);
 
                     // Update frmaework and platform if required. For commandline scenario update happens in ArgumentProcessor.

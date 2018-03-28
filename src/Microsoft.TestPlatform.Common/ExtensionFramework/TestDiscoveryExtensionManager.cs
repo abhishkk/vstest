@@ -171,8 +171,26 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
         /// </summary>
         /// <param name="fileExtensions"> The file Extensions. </param>
         /// <param name="defaultExecutorUri"> The default Executor Uri. </param>
+        public TestDiscovererMetadata(IReadOnlyCollection<string> fileExtensions, string defaultExecutorUri)
+        {
+            if (fileExtensions != null && fileExtensions.Count > 0)
+            {
+                this.FileExtension = new List<string>(fileExtensions);
+            }
+
+            if (!string.IsNullOrWhiteSpace(defaultExecutorUri))
+            {
+                this.DefaultExecutorUri = new Uri(defaultExecutorUri);
+            }
+        }
+
+        /// <summary>
+        /// The default constructor.
+        /// </summary>
+        /// <param name="fileExtensions"> The file Extensions. </param>
+        /// <param name="defaultExecutorUri"> The default Executor Uri. </param>
         /// <param name="assemblyType"> The assembly type. </param>
-        public TestDiscovererMetadata(IReadOnlyCollection<string> fileExtensions, string defaultExecutorUri, string assemblyType)
+        public TestDiscovererMetadata(IReadOnlyCollection<string> fileExtensions, string defaultExecutorUri, AssemblyType assemblyType)
         {
             if (fileExtensions != null && fileExtensions.Count > 0)
             {
@@ -184,7 +202,7 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
                 this.DefaultExecutorUri = new Uri(defaultExecutorUri);
             }
 
-            if (!string.IsNullOrWhiteSpace(assemblyType))
+            if (assemblyType != AssemblyType.Unknown)
             {
                 // TODO: If we are letting user pass assembly type in string format instead of enum. Then is this the right place for validation of the value?
                 // TODO: I think we should do the validation here only and convert string to enum. Because string to uri conversion for DefaultExecutorUri is also happening here only.
@@ -213,7 +231,7 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework
         /// <summary>
         /// Gets the assembly type supported by the discoverer.
         /// </summary>
-        public string AssemblyType
+        public AssemblyType AssemblyType
         {
             get;
             private set;

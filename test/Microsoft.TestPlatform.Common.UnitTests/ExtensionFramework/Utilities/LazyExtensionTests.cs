@@ -117,13 +117,13 @@ namespace TestPlatform.Common.UnitTests.ExtensionFramework.Utilities
                 private set;
             }
 
-            public string AssemblyType
+            public AssemblyType AssemblyType
             {
                 get;
                 private set;
             }
 
-            public DummyDiscovererCapability(List<string> fileExtensions, string executorURI, string assemblyType)
+            public DummyDiscovererCapability(List<string> fileExtensions, string executorURI, AssemblyType assemblyType)
             {
                 this.FileExtension = fileExtensions;
                 this.DefaultExecutorUri = new Uri(executorURI);
