@@ -42,7 +42,7 @@ namespace Microsoft.VisualStudio.TestPlatform.Common.ExtensionFramework.Utilitie
         {
             get
             {
-                return new object[] { this.FileExtensions, this.DefaultExecutorUri };
+                return new object[] { this.FileExtensions, this.DefaultExecutorUri, this.AssemblyType };
             }
         }
 
