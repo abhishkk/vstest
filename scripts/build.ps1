@@ -748,7 +748,7 @@ function Locate-MSBuildPath
     }
 
     $vsInstallPath = Resolve-Path -path $vsInstallPath
-    $msbuildPath = Join-Path -path $vsInstallPath -childPath "MSBuild\$env:MSBUILD_VERSION\Bin"
+    $msbuildPath = Join-Path -path $vsInstallPath -childPath "MSBuild\Current\Bin"
 
     Write-Verbose "msbuildPath is : $msbuildPath"
     return $msbuildPath

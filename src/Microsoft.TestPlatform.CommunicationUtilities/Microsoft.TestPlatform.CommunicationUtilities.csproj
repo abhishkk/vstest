@@ -5,8 +5,11 @@
   <Import Project="$(TestPlatformRoot)scripts/build/TestPlatform.Settings.targets" />
   <PropertyGroup>
     <AssemblyName>Microsoft.TestPlatform.CommunicationUtilities</AssemblyName>
-    <TargetFrameworks>netstandard1.4;net451</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(DotNetBuildFromSource)' == 'true' ">netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>3021</NoWarn>
+    <TargetFrameworks Condition=" '$(DotNetBuildFromSource)' == 'true' ">netstandard2.0</TargetFrameworks>
     <WarningsAsErrors>true</WarningsAsErrors>
     <EnableCodeAnalysis>true</EnableCodeAnalysis>
   </PropertyGroup>
@@ -17,17 +20,24 @@
     <ProjectReference Include="..\Microsoft.TestPlatform.CoreUtilities\Microsoft.TestPlatform.CoreUtilities.csproj" />
     <ProjectReference Include="..\Microsoft.TestPlatform.ObjectModel\Microsoft.TestPlatform.ObjectModel.csproj" />
     <ProjectReference Include="..\Microsoft.TestPlatform.Common\Microsoft.TestPlatform.Common.csproj" />
-
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>$(JsonNetVersion)</Version>
-    </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
+  <ItemGroup>
     <PackageReference Include="System.Runtime.Serialization.Primitives">
       <Version>4.1.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Bcl.Json.Sources" Version="4.6.0-preview.19073.11" >
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-preview1-27018-01" />
+    <PackageReference Include="System.Memory" Version="4.5.2" />
+    <Reference Include="System.Text.JsonLab.Serialization">
+      <HintPath>C:\Users\abhishk\Downloads\System.Text.JsonLab.Serialization.0.1.1-e190213-1\lib\netstandard2.0\System.Text.JsonLab.Serialization.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>$(JsonNetVersion)</Version>
+    </PackageReference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
